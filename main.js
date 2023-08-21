@@ -10,6 +10,7 @@ const api = {
     if (evt.keyCode == 13) {
       getResults(searchbox.value);
     }
+
   }
   
   function getResults (query) {
@@ -77,7 +78,32 @@ const api = {
     }
 }
 
+//temperature converter
+
 function temperatureConverter(valNum) {
     valNum = parseFloat(valNum);
     document.getElementById("outputCelsius").innerHTML = Math.round((valNum*1.8) + 32);
   }
+
+
+ // getting data using current location 
+
+  function successCallback(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+  
+    fetch(`${api.base}weather?lat=${latitude}&lon=${longitude}&units=metric&APPID=${api.key}`)
+      .then(weather => {
+        return weather.json();
+      })
+      .then(displayResults)
+      .catch(error => {
+        console.log("Error fetching weather data:", error);
+      });
+  }
+  
+  const errorCallback = (error) => {
+    console.log("Error getting geolocation:", error);
+  };
+  
+  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
